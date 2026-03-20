@@ -1,0 +1,79 @@
+Create TODO List in Angular using Different Components 
+Step 1 — Install Angular CLI 
+Open terminal and install Angular CLI globally. 
+npm install -g @angular/cli Check installation: 
+	ng version 
+ 
+Step 2 — Create Angular Project Create a new Angular project. 
+	ng new todo-app 
+Select the following options: Stylesheet format → CSS 
+Server Side Rendering → No AI Tools → None 
+Move into the project folder: 
+	cd todo-app 
+ 
+Step 3 — Run Angular Project Start Angular development server. 
+	ng serve Open browser: 
+http://localhost:4200 Default Angular page will appear. 
+ 
+Step 4 — Generate TODO Component Create a new component named todo.  
+	ng generate component todo Angular creates the following files: 
+src/app/todo 
+   todo.ts    todo.html    todo.css 
+   todo.spec.ts 
+ 
+Step 5 — Edit App Component Open: 
+src/app/app.ts update code with the following: import { Component } from '@angular/core'; import { Todo } from './todo/todo'; 
+@Component({ 
+  selector: 'app-root',   imports: [Todo],   templateUrl: './app.html',   styleUrl: './app.css' 
+}) 
+export class App { } 
+ 
+Step 6 — Edit App HTML Open: 
+src/app/app.html Delete everything and add: 
+<app-todo></app-todo> 
+ 
+Step 7 — Write Todo Component Code Open: 
+src/app/todo/todo.ts Update the code with: import { Component } from '@angular/core'; import { FormsModule } from '@angular/forms'; 
+import { CommonModule } from '@angular/common'; 
+ 
+@Component({ 
+  selector: 'app-todo', 
+  standalone: true,   imports: [FormsModule, CommonModule], 
+  templateUrl: './todo.html', 
+  styleUrl: './todo.css' 
+}) 
+ 
+export class Todo {   task = '';   todos: string[] = []; 
+ 
+  addTodo() {     if (this.task.trim()) {       this.todos.push(this.task);       this.task = ''; 
+    } 
+  } 
+  deleteTodo(index: number) {     this.todos.splice(index, 1); 
+  } 
+ 
+} 
+  
+  
+Step 8 — Write Todo HTML Open: src/app/todo/todo.html Delete all existing code and add: 
+<h2>My Todos</h2> 
+ 
+<input [(ngModel)]="task" placeholder="What needs to be done?"> 
+<button (click)="addTodo()">Add</button> 
+ 
+<ul> 
+  <li *ngFor="let todo of todos; let i = index"> 
+    {{ todo }} 
+    <button (click)="deleteTodo(i)">Delete</button> 
+  </li> 
+</ul> 
+ 
+Step 9 — Run the Application Run the project again. 
+ ng serve Open browser: 
+http://localhost:4200 
+   
+   
+   
+    
+   
+   
+   
