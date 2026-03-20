@@ -1,0 +1,73 @@
+npm init -y
+npm i express
+
+in package.js below main add
+"type": "module"
+
+app.js
+create a folder public in that index.html
+
+app.js
+import { Server } from 'socket.io';
+
+const app = express()
+const server = http.createServer(app)
+const io = new Server(server)
+
+app.use(express.static(path.join(process.cwd(), "public")))
+
+io.on('connection', (socket) =>{
+    console.log('clint connected', socket.id)
+
+    socket.on('chat',(message)=> {
+        console.log(message)
+
+        io.emit('chat',message)
+    })
+})
+
+server.listen(3000, ()=> {
+    console.log("server is on")
+})
+
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Chat aplication</h1>
+    <input id="msg" placeholder="Enter Message" />
+    <button onclick="sendMessage()">send</button>
+    <ul id="message"></ul>
+
+    <script>
+        const socket = io();
+
+        function sendMessage(){
+            const input = document.getElementById('msg')
+            const message = input.value
+            console.log(message)
+
+            socket.emit('chat',message)
+            
+        }
+
+        socket.on('chat',(message) =>{
+            const li = document.createElement('li')
+            li.textContent = message
+
+            document.getElementById('message').appendChild(li)
+        })
+    </script>
+
+</body>
+</html>
+
+nodemon app.js
+
+in chrome localhost:3000
