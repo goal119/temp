@@ -1,0 +1,43 @@
+npm create vite@latest
+
+app.jsx
+import {useEffect, useState} from "react"
+
+export const App = () => {
+  const[country, setCountry] = useState([])
+  console.log(country);
+
+  useEffect (() =>{
+    const getAll = async () => {
+      const res= await fetch("https://restcountries.com/v3.1/all?fields=name,flags")
+      const data = await res.json()
+      setCountry(data)
+      
+
+    }
+    getAll()
+  },[])
+  
+  return (
+    <>
+    <h1>All fetches data</h1>
+    <ul>
+      <li>
+        {
+      country.map((c, i) => {
+        <div key={i}>
+
+          <img src={c.flags.png} alt="asd" />
+        <p>
+          {c.name.common}
+        </p>
+        </div>
+
+      })
+    }
+      </li>
+    </ul>
+    
+    </>
+  )
+}
