@@ -1,0 +1,148 @@
+npm create vite@latest
+
+header.jsx
+import React from 'react';
+ 
+const Header = () => {
+   return (
+     <header>
+       <h1>To Do List</h1>
+     </header>
+   );
+};
+ 
+export default Header;
+
+data.json
+
+[
+  {"id": 1, "text": "Learn React", "done": false}
+  {"id": 2, "text": "Build todo app", "done": true}
+  
+]
+
+app.jsx
+import React, { useState } from 'react';
+import './styles.css';
+import Header from './Header';
+import ToDoList from './ToDoList'; // Import ToDoList component
+import data from './data.json';
+
+function App() {
+  const [toDoList, setToDoList] = useState(data);
+
+  return (
+    <div className="App">
+      <Header />
+      <ToDoList toDoList={toDoList} /> {/* Pass toDoList as a prop */}
+    </div>
+  );
+}
+
+export default App;
+
+TodoList.jsx
+import React from 'react';
+import ToDo from './ToDo'; // Import the ToDo component
+
+const ToDoList = ({ toDoList }) => {
+  return (
+    <div>
+      {toDoList.map((todo) => (
+        <ToDo key={todo.id} todo={todo} />
+      ))}
+    </div>
+  );
+};
+
+export default ToDoList;
+
+Todo.jsx
+import React from 'react';
+
+const ToDo = ({ todo }) => {
+  return <div>{todo.task}</div>;
+};
+
+export default ToDo;
+
+
+app.jsx
+import React, { useState } from 'react';
+import './styles.css';
+import Header from './Header';
+import ToDoList from './ToDoList';
+import data from './data.json';
+import ToDoForm from './ToDoForm';
+
+function App() {
+  const [toDoList, setToDoList] = useState(data);
+  
+  const addTask = (userInput) => {
+    const maxId = toDoList.reduce((max, task) => (task.id > max ? task.id : max), 0);
+    const newTask = {
+      id: maxId + 1,
+      task: userInput,
+      complete: false,
+    };
+    setToDoList([...toDoList, newTask]);
+  };
+  
+  const handleToggle = (id) => {
+    const updatedList = toDoList.map((task) =>
+      task.id === id ? { ...task, complete: !task.complete } : task
+    );
+    setToDoList(updatedList);
+  };
+  
+  const handleFilter = () => {
+    const filteredList = toDoList.filter((task) => !task.complete);
+    setToDoList(filteredList);
+  };
+
+  return (
+    <div className="App">
+      <Header />
+      <ToDoList toDoList={toDoList} handleToggle={handleToggle} handleFilter={handleFilter} />
+      <ToDoForm addTask={addTask} />    
+    </div>
+  );
+}
+
+export default App;
+
+TOdoForm.jsx
+import React, { useState } from 'react';
+
+const ToDoForm = ({ addTask }) => {
+  const [userInput, setUserInput] = useState('');
+
+  const handleChange = (e) => {
+    setUserInput(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (userInput.trim()) {
+      addTask(userInput);
+      setUserInput('');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="todo-form">
+      <input
+        type="text"
+        value={userInput}
+        onChange={handleChange}
+        placeholder="Enter task..."
+        className="todo-input"
+      />
+      <button type="submit" className="add-button">
+        Add Task
+      </button>
+    </form>
+  );
+};
+
+export default ToDoForm;
