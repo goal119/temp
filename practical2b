@@ -1,0 +1,105 @@
+Perform File/Image Upload Operation using MongoDB 
+Requirements 
+Before starting, check that the following software is installed. 
+Check Node.js 
+	node -v 
+	npm -v 
+If not installed, download from: 
+https://nodejs.org 
+ 
+Check MongoDB 
+Check MongoDB installation: 
+	mongod --version Start MongoDB server: 
+	mongod / mongosh MongoDB runs on: 
+mongodb://127.0.0.1:27017 
+ 
+  STEP 1: Create Project 
+	mkdir file-upload 
+	cd file-upload 
+ 
+  STEP 2: Initialize 
+	npm init -y 
+ 
+  STEP 3: Install Packages 
+	npm install express mongoose multer 
+ 
+  STEP 4: Create Files + Folder   Create: 
+	touch app.js fileModel.js 
+	mkdir uploads   Final structure: file-upload 
+│ 
+├── app.js 
+├── fileModel.js 
+├── uploads/ 
+ 
+  STEP 5: Write MODEL (fileModel.js) const mongoose = require("mongoose"); 
+ 
+const FileSchema = new mongoose.Schema({ 
+  name: String, 
+  path: String 
+}); 
+ 
+module.exports = mongoose.model("File", FileSchema); 
+ 
+  STEP 6: Write MAIN SERVER (app.js) const express = require("express"); const mongoose = require("mongoose"); const multer = require("multer"); 
+const File = require("./fileModel"); 
+ 
+const app = express(); 
+ 
+// DB connect 
+mongoose.connect("mongodb://127.0.0.1:27017/testDB") 
+.then(()=> console.log("DB Connected")); 
+ 
+// multer storage const storage = multer.diskStorage({   destination: (req, file, cb)=>{ 
+    cb(null, "uploads/"); 
+  }, 
+  filename: (req, file, cb)=>{ 
+    cb(null, Date.now() + "-" + file.originalname); 
+  } 
+}); 
+ 
+const upload = multer({ storage }); 
+ 
+// UPLOAD API 
+app.post("/upload", upload.single("file"), async (req, res)=>{   const data = new File({     name: req.file.filename, 
+    path: req.file.path 
+  }); 
+ 
+  await data.save();   res.send("File Uploaded"); 
+}); 
+ 
+// TEST ROUTE app.get("/", (req, res)=>{ 
+  res.send("Server Running"); 
+}); 
+ 
+app.listen(3000, ()=>{   console.log("Server running"); 
+}); 
+ 
+  STEP 7: Start MongoDB 
+	mongod 
+ 
+  STEP 8: Run Server 
+	node app.js 
+	Output: 
+DB Connected 
+Server running 
+ 
+  STEP 9: Test in Browser http://localhost:3000 
+	Output: 
+Server Running 
+ 
+  STEP 10: Test File Upload (Postman)   Method: POST http://localhost:3000/upload   Go to: 
+	• 	Body → form-data 
+Key 	Type 	Value 
+file 	File 	(choose image) 
+  Click Send 
+ 
+  STEP 11: Check Folder   Open: uploads/ ✔ You will see: 
+123456-image.png 
+ 
+  STEP 12: Check MongoDB mongosh use testDB 
+db.files.find() 
+	Output: 
+{ 
+  name: "123456-image.png",   path: "uploads/123456-image.png" 
+} 
+ 
