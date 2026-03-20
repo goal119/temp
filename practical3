@@ -1,0 +1,83 @@
+Step 1 – Create Project Folder
+Create a new folder:
+my-module
+Open terminal inside it.
+
+Step 2 – Initialize Node Project
+Run:
+•	npm init
+It will ask questions:
+Example answers:
+package name: my-module
+version: 1.0.0
+description: simple math module
+entry point: index.js
+author: Your Name
+This creates:
+package.json
+
+ Step 3 – Create Module File
+Create file:
+index.js
+Example module code:
+function add(a,b){
+    return a+b
+}
+
+function multiply(a,b){
+    return a*b
+}
+
+module.exports = {
+    add,
+    multiply
+}
+Explanation
+This module exports two functions:
+Function	Purpose
+add()	adds numbers
+multiply()	multiplies numbers
+
+
+ Step 4 – Test the Module
+Create another file:
+test.js
+Write:
+const math = require('./index')
+
+console.log(math.add(5,3))
+console.log(math.multiply(4,2))
+Run:
+node test.js
+Output:
+8
+8
+
+
+Step 5 – Create npm Account
+Go to:
+https://www.npmjs.com
+Create an account.
+
+ Step 6 – Login to npm
+In terminal run:
+npm login
+Enter:
+username
+password
+email
+
+Step 7 – Publish Module
+Run:
+npm publish
+If successful you will see:
++ my-module@1.0.0
+Now your module is available on npm registry.
+
+Step 8 – Use Your Module in Another Project
+Create new project and install:
+npm install my-module
+Use it:
+const math = require('my-module')
+
+console.log(math.add(10,5))
